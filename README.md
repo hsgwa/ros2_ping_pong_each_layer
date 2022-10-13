@@ -49,8 +49,8 @@ CMake Error at /ros2_ws/install/fastrtps/share/fastrtps/cmake/fastrtps-config.cm
 . build/local_setup.sh
 
 # rclcpp
-./build/cpp_pubsub/talker
-./build/cpp_pubsub/listener
+./build/rclcpp_pubsub/talker_rclcpp
+./build/rclcpp_pubsub/listener_rclcpp
 
 # rcl
 ./build/rcl_pubsub/talker_rcl
@@ -59,6 +59,10 @@ CMake Error at /ros2_ws/install/fastrtps/share/fastrtps/cmake/fastrtps-config.cm
 # rmw
 ./build/rmw_pubsub/talker_rmw
 ./build/rmw_pubsub/listener_rmw
+
+# FastRTPS
+./build/fastrtps_pubsub/talker_fastrtps
+./build/fastrtps_pubsub/listener_fastrtps
 ```
 
 # License

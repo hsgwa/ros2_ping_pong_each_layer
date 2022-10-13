@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(message)
+project(twmsgs)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -15,16 +15,15 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/Sample.msg"
+set(msg_files
   "msg/Data.msg"
+  "srv/Data.srv"
+)
+rosidl_generate_interfaces(${PROJECT_NAME}
+  ${msg_files}
 )
 
 ament_export_dependencies(rosidl_default_runtime)

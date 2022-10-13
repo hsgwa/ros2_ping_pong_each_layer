@@ -18,8 +18,10 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(tlsf_cpp REQUIRED)
 find_package(message REQUIRED)
+find_package(rttest REQUIRED)
+find_package(layer_pubsub_common REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -34,18 +36,40 @@ if(BUILD_TESTING)
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+include_directories(include)
 
-set(TALKER talker_rclcpp)
-add_executable(${TALKER} src/rclcpp_minimum_publisher.cpp)
-ament_target_dependencies(${TALKER} rclcpp message std_msgs)
+add_library(rclcpp_pubsub src/rclcpp_pubsub.cpp)
+# target_include_directories(rclcpp_pubsub PUBLIC include)
+ament_target_dependencies(rclcpp_pubsub rclcpp message tlsf_cpp rttest layer_pubsub_common)
 
-set(LISTENER listener_rclcpp)
-add_executable(${LISTENER} src/rclcpp_minimum_subscriber.cpp)
-ament_target_dependencies(${LISTENER} rclcpp message std_msgs)
+# set(LISTENER listener_rclcpp)
+# add_executable(${LISTENER} src/rclcpp_minimum_subscriber.cpp)
+# ament_target_dependencies(${LISTENER} rclcpp message std_msgs)
+ament_export_targets(export_rclcpp_pubsub HAS_LIBRARY_TARGET)
+ament_export_dependencies(ament_cmake rclcpp message)
 
-install(TARGETS
-  ${TALKER}
-  ${LISTENER}
-  DESTINATION lib/${PROJECT_NAME})
+ament_export_include_directories(include)
+ament_export_libraries(rclcpp_pubsub)
+
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+  )
+
+install(
+  TARGETS rclcpp_pubsub
+  EXPORT export_rclcpp_pubsub
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
+# install(TARGETS
+#   rclcpp_pubsub
+#   ${TALKER}
+#   ${LISTENER}
+#   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

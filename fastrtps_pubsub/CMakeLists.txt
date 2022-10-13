@@ -28,6 +28,9 @@ find_package(rosidl_typesupport_fastrtps_cpp REQUIRED)  # for message_type_suppo
 find_package(rosidl_typesupport_fastrtps_c REQUIRED)  # for message_type_support_callbacks_t etc
 find_package(rmw_fastrtps_cpp REQUIRED)  # for MessageTypeSupport
 find_package(rmw_fastrtps_shared_cpp REQUIRED)  # for MessageTypeSupport
+find_package(message REQUIRED)  # for MessageTypeSupport
+find_package(rmw_dds_common REQUIRED)
+find_package(layer_pubsub_common REQUIRED)
 
 # FastRTPS is needed as in src/ros2/rmw_fastrtps/rmw_fastrtps_cpp/rmw_fastrtps_shared_cpp-extras.cmake.
 # fastcdr, rmw_fastrtps_cpp are added in try-and-error.
@@ -44,11 +47,22 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-set(TALKER "talker_fastrtps")
-add_executable(${TALKER}
-  src/fastrtps_minimum_publisher.cpp
-  src/my_message_type_support.cpp)
-ament_target_dependencies(${TALKER}
+include_directories(include)
+
+add_library(fastrtps_pubsub src/fastrtps_pubsub.cpp src/my_message_type_support.cpp)
+ament_target_dependencies(
+  fastrtps_pubsub fastrtps message rosidl_typesupport_fastrtps_c
+  rmw_fastrtps_shared_cpp
+  layer_pubsub_common
+  )
+
+ament_export_targets(export_fastrtps_pubsub HAS_LIBRARY_TARGET)
+ament_export_dependencies(ament_cmake fastrtps std_msgs message fastrtps rmw_fastrtps_shared_cpp rosidl_typesupport_fastrtps_c rmw_dds_common)
+
+ament_export_include_directories(include)
+ament_export_libraries(fastrtps_pubsub)
+
+set(DEPENDS
   "std_msgs"
   "fastrtps"
   "fastcdr"
@@ -59,5 +73,31 @@ ament_target_dependencies(${TALKER}
   "rosidl_typesupport_fastrtps_cpp"
   "rosidl_generator_c"
   )
+
+install(
+  DIRECTORY include/
+  DESTINATION include)
+
+install(
+  TARGETS fastrtps_pubsub
+  EXPORT export_fastrtps_pubsub
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+  )
+
+# set(TALKER "talker_fastrtps")
+# add_executable(${TALKER}
+#   src/fastrtps_minimum_publisher.cpp
+#   src/my_message_type_support.cpp)
+# ament_target_dependencies(${TALKER} ${DEPENDS} message)
+
+# set(LISTENER "listener_fastrtps")
+# add_executable(${LISTENER}
+#   src/fastrtps_minimum_subscriber.cpp
+#   src/my_message_type_support.cpp)
+# ament_target_dependencies(${LISTENER} ${DEPENDS} message)
+
 
 ament_package()

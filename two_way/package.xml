@@ -1,30 +1,30 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>rmw_pubsub</name>
+  <name>two_way</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="y-okumura@todo.todo">y-okumura</maintainer>
+  <maintainer email="hasegawa@isp.co.jp">hasegawa</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <build_export_depend>rmw</build_export_depend>
 
-  <depend>rmw_implementation</depend>
+  <build_depend>rclcpp_pubsub</build_depend>
+  <build_depend>rcl_pubsub</build_depend>
+  <build_depend>rmw_pubsub</build_depend>
+  <build_depend>fastrtps_pubsub</build_depend>
+  <build_depend>osrf_testing_tools_cpp</build_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
-
-  <build_depend>layer_pubsub_common</build_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
   </export>
 
-  <exec_depend>rcl</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>rmw</exec_depend>
-  <exec_depend>message</exec_depend>
-
+  <exec_depend>rclcpp_pubsub</exec_depend>
+  <exec_depend>rcl_pubsub</exec_depend>
+  <exec_depend>rmw_pubsub</exec_depend>
+  <exec_depend>fastrtps_pubsub</exec_depend>
 </package>

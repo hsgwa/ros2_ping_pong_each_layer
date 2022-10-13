@@ -21,6 +21,8 @@ find_package(rcl REQUIRED)
 find_package(rosidl_typesupport_cpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rmw REQUIRED)
+find_package(message REQUIRED)
+find_package(layer_pubsub_common REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -33,17 +35,35 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-set(TALKER "talker_rcl")
-add_executable(${TALKER} src/rcl_minimum_publisher.cpp)
-ament_target_dependencies(${TALKER} rcl std_msgs)
+include_directories(include)
 
-set(LISTENER "listener_rcl")
-add_executable(${LISTENER} src/rcl_minimum_subscriber.cpp)
-ament_target_dependencies(${LISTENER} rcl std_msgs)
+add_library(rcl_pubsub src/rcl_pubsub.cpp)
+ament_target_dependencies(rcl_pubsub rcl message layer_pubsub_common)
 
-install(TARGETS
-  ${TALKER}
-  ${LISTENER}
-  DESTINATION lib/${PROJECT_NAME})
+
+ament_export_targets(export_rcl_pubsub HAS_LIBRARY_TARGET)
+ament_export_dependencies(ament_cmake std_msgs message)
+
+ament_export_include_directories(include)
+ament_export_libraries(rcl_pubsub)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+  )
+
+install(
+  TARGETS rcl_pubsub
+  EXPORT export_rcl_pubsub
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+  )
+
+# install(TARGETS
+#   ${TALKER}
+#   ${LISTENER}
+#   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
